@@ -1,0 +1,76 @@
+package com.example.losowykierunek;
+
+import javafx.animation.AnimationTimer;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.stage.Stage;
+
+import java.util.Random;
+
+public class DVD extends Application {
+
+    private static final int WIDTH = 800;
+    private static final int HEIGHT = 600;
+    private static final int IMAGE_WIDTH = 80;
+    private static final int IMAGE_HEIGHT = 60;
+    private static final int SPEED = 5;
+
+    private double imageX = WIDTH / 2;
+    private double imageY = HEIGHT / 2;
+    private double deltaX = SPEED;
+    private double deltaY = SPEED;
+
+    @Override
+    public void start(Stage primaryStage) {
+        Pane pane = new Pane();
+        Scene scene = new Scene(pane, WIDTH, HEIGHT);
+        primaryStage.setScene(scene);
+        primaryStage.setTitle("DVD GAME");
+
+        Image image = new Image("file:src/img/pngegg.png");
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(IMAGE_WIDTH);
+        imageView.setFitHeight(IMAGE_HEIGHT);
+        pane.getChildren().add(imageView);
+
+        AnimationTimer timer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                // Poruszanie obrazu
+                imageView.setLayoutX(imageX);
+                imageView.setLayoutY(imageY);
+
+                // Odbicie od ścian
+                if (imageX <= 0 || imageX >= WIDTH - IMAGE_WIDTH) {
+                    deltaX *= -1;
+                    changeBackgroundColor(scene);
+                }
+                if (imageY <= 0 || imageY >= HEIGHT - IMAGE_HEIGHT) {
+                    deltaY *= -1;
+                    changeBackgroundColor(scene);
+                }
+
+                // Aktualizacja pozycji obrazu
+                imageX += deltaX;
+                imageY += deltaY;
+            }
+        };
+        timer.start();
+
+        primaryStage.show();
+    }
+
+    private void changeBackgroundColor(Scene scene) {
+        Random random = new Random();
+        Color randomColor = Color.rgb(random.nextInt(256), random.nextInt(256), random.nextInt(256));
+        scene.setFill(randomColor);
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}
